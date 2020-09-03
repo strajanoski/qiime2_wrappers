@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<tool id="qiime_alignment_mafft" name="qiime alignment mafft"
+      version="2020.8">
+  <description>De novo multiple sequence alignment with MAFFT</description>
+  <requirements>
+    <requirement type="package" version="2020.8">qiime2</requirement>
+  </requirements>
+  <command><![CDATA[
+qiime alignment mafft
+
+--i-sequences=$isequences
+
+#if str($pnthreads) != 'None':
+--p-n-threads=$pnthreads
+#end if
+
+#if $pparttree:
+ --p-parttree
+#end if
+
+--o-alignment=oalignment
+
+#if str($examples) != 'None':
+--examples=$examples
+#end if
+
+;
+cp oalignment.qza $oalignment
+
+  ]]></command>
+  <inputs>
+    <param format="qza,no_unzip.zip" label="--i-sequences: ARTIFACT FeatureData[Sequence] The sequences to be aligned.              [required]" name="isequences" optional="False" type="data" />
+    <param label="--p-n-threads: " name="pnthreads" optional="True" type="select">
+      <option selected="True" value="None">Selection is Optional</option>
+      <option value="Int % Range(1">Int % Range(1</option>
+      <option value="None">None</option>
+    </param>
+    <param label="--p-parttree: --p-parttree: / --p-no-parttree This flag is required if the number of sequences being aligned are larger than 1000000. Disabled by default                             [default: False]" name="pparttree" selected="False" type="boolean" />
+    <param label="--examples: Show usage examples and exit." name="examples" optional="False" type="data" />
+    
+  </inputs>
+
+  <outputs>
+    <data format="qza" label="${tool.name} on ${on_string}: alignment.qza" name="oalignment" />
+    
+  </outputs>
+
+  <help><![CDATA[
+De novo multiple sequence alignment with MAFFT
+###############################################################
+
+Perform de novo multiple sequence alignment using MAFFT.
+
+Parameters
+----------
+sequences : FeatureData[Sequence]
+    The sequences to be aligned.
+n_threads : Int % Range(1, None) | Str % Choices('auto'), optional
+    The number of threads. (Use `auto` to automatically use all available
+    cores)
+parttree : Bool, optional
+    This flag is required if the number of sequences being aligned are
+    larger than 1000000. Disabled by default
+
+Returns
+-------
+alignment : FeatureData[AlignedSequence]
+    The aligned sequences.
+  ]]></help>
+  <macros>
+    <import>qiime_citation.xml</import>
+  </macros>
+  <expand macro="qiime_citation"/>
+</tool>
